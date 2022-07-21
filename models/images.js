@@ -25,6 +25,12 @@ const imagesSchema = new mongoose.Schema({
     type: [String],
     required: true,
     enum: ["arts", "culture", "african", "nature"],
+    validate: {
+      validator: (tag) => {
+        return tag && tag.length > 0;
+      },
+      message: "An Image should have atleast one tag",
+    },
   },
   datePosted: {
     type: Date,
