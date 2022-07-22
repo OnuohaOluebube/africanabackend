@@ -2,57 +2,79 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const { Category, validate } = require("../models/categories");
+const auth = require("../middleware/auth");
+const asyncMiddleware = require("../middleware/asyncMiddleware");
 
-router.get("/", async (req, res) => {
-  const categories = await Category.find().sort("name");
-  res.send(categories);
-});
+router.get(
+  "/",
+  asyncMiddleware(async (req, res) => {
+    const categories = await Category.find().sort("name");
+    res.send(categories);
+  })
+);
 
-router.get("/:id", async (req, res) => {
-  const category = await Category.findById(req.params.id);
-  if (!category)
-    return res
-      .status(404)
-      .send("The category with the given id cannot be found");
-  res.send(category);
-});
+router.get(
+  "/:id",
+  asyncMiddleware(async (req, res) => {
+    const category = await Category.findById(req.params.id);
+    if (!category)
+      return res
+        .status(404)
+        .send("The category with the given id cannot be found");
+    res.send(category);
+  })
+);
 
-router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+router.post(
+  "/",
+  auth,
+  asyncMiddleware(async (req, res) => {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-  let category = new Category({
-    name: req.body.name,
-  });
-  await category.save();
-  res.send(category);
-});
-
-router.put("/:id", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  const category = await Category.findByIdAndUpdate(
-    req.params.id,
-    {
+    let category = new Category({
       name: req.body.name,
-    },
-    { new: true }
-  );
+    });
+    await category.save();
+    res.send(category);
+  })
+);
 
-  if (!category)
-    return res.status(404).send("The Category with the given ID is not found");
+router.put(
+  "/:id",
+  asyncMiddleware(async (req, res) => {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-  res.send(category);
-});
+    const category = await Category.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+      },
+      { new: true }
+    );
 
-router.delete("/:id", async (req, res) => {
-  const category = await Category.findByIdAndRemove(req.params.id);
+    if (!category)
+      return res
+        .status(404)
+        .send("The Category with the given ID is not found");
 
-  if (!category)
-    return res.status(404).send("The Category with the given ID is not found");
+    res.send(category);
+  })
+);
 
-  res.send(category);
-});
+router.delete(
+  "/:id",
+  asyncMiddleware(async (req, res) => {
+    const category = await Category.findByIdAndRemove(req.params.id);
+
+    if (!category)
+      return res
+        .status(404)
+        .send("The Category with the given ID is not found");
+
+    res.send(category);
+  })
+);
 
 module.exports = router;
