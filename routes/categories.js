@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const { Category, validate } = require("../models/categories");
 const auth = require("../middleware/auth");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
+const validateObjectId = require("../middleware/validateObjectId");
 
 router.get(
   "/",
@@ -15,6 +16,7 @@ router.get(
 
 router.get(
   "/:id",
+  validateObjectId,
   asyncMiddleware(async (req, res) => {
     const category = await Category.findById(req.params.id);
     if (!category)
@@ -42,6 +44,7 @@ router.post(
 
 router.put(
   "/:id",
+  auth,
   asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -65,6 +68,7 @@ router.put(
 
 router.delete(
   "/:id",
+  auth,
   asyncMiddleware(async (req, res) => {
     const category = await Category.findByIdAndRemove(req.params.id);
 

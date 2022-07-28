@@ -3,6 +3,7 @@ const router = express.Router();
 const { Image, validate } = require("../models/images");
 const { Category } = require("../models/categories");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
+const auth = require("../middleware/auth");
 
 router.get(
   "/",
@@ -27,6 +28,7 @@ router.get(
 
 router.post(
   "/",
+  auth,
   asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -53,6 +55,7 @@ router.post(
 
 router.delete(
   "/:id",
+  auth,
   asyncMiddleware(async (req, res) => {
     const image = await Image.findByIdAndRemove(req.params.id);
 
@@ -64,35 +67,30 @@ router.delete(
   })
 );
 
-// router.put("/:id", asyncMiddleware(async (req, res) => {
-//   const { error } = validateImage(req.body);
-//   if (error) return res.status(400).send(error.details[0].message);
+router.put(
+  "/:id",
+  auth,
+  asyncMiddleware(async (req, res) => {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-//   const image = await Image.findByIdAndUpdate(
-//     req.params.id,
-//     {
-//       name: req.body.name,
-//       categoryId: req.body.categoryId,
-//       description: req.body.description,
-//       tags: req.body.tags,
-//     },
-//     {
-//       new: true,
-//     }
-//   );
-//   if (!image)
-//     return res.status(404).send("The image with the given ID is not found");
+    const image = await Image.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        categoryId: req.body.categoryId,
+        description: req.body.description,
+        tags: req.body.tags,
+      },
+      {
+        new: true,
+      }
+    );
+    if (!image)
+      return res.status(404).send("The image with the given ID is not found");
 
-//   res.send(image);
-// }));
+    res.send(image);
+  })
+);
 
-// const validateImage = (image) => {
-//   const schema = Joi.object({
-//     name: Joi.string().min(3).max(50).label("Name"),
-//     categoryId: Joi.objectId(),
-//     description: Joi.string().min(3).max(255).label("Description"),
-//     tags: Joi.array().items(Joi.string()),
-//   });
-//   return schema.validate(image);
-// };
 module.exports = router;

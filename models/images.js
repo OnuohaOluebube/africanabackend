@@ -8,7 +8,7 @@ const imagesSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 3,
-    maxlength: 255,
+    maxlength: 50,
   },
 
   category: {
@@ -19,7 +19,7 @@ const imagesSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 3,
-    maxlength: 255,
+    maxlength: 50,
   },
   tags: {
     type: [String],
@@ -44,7 +44,7 @@ const validateImage = (image) => {
   const schema = Joi.object({
     name: Joi.string().required().min(3).max(50).label("Name"),
     categoryId: Joi.objectId().required(),
-    description: Joi.string().required().min(3).max(255).label("Description"),
+    description: Joi.string().required().min(3).max(50).label("Description"),
     tags: Joi.array().items(Joi.string()).required(),
   });
   return schema.validate(image);

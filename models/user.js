@@ -8,20 +8,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 3,
-    maxlength: 255,
+    maxlength: 50,
   },
   lastname: {
     type: String,
     required: true,
     minlength: 3,
-    maxlength: 255,
+    maxlength: 50,
   },
   email: {
     type: String,
     required: true,
     unique: true,
     minlength: 3,
-    maxlength: 255,
+    maxlength: 50,
   },
 
   password: {
@@ -33,20 +33,23 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ id: this._id }, config.get("private"));
+  const token = jwt.sign(
+    { id: this._id, isAdmin: true },
+    config.get("private")
+  );
   return token;
 };
 const User = mongoose.model("User", userSchema);
 
 const validateUser = (user) => {
   const schema = Joi.object({
-    firstname: Joi.string().required().min(3).max(255),
-    lastname: Joi.string().required().min(3).max(255),
+    firstname: Joi.string().required().min(3).max(50),
+    lastname: Joi.string().required().min(3).max(50),
     email: Joi.string()
       .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
       .required()
       .min(3)
-      .max(255),
+      .max(50),
 
     password: passwordComplexity(),
     confirmpassword: Joi.any().valid(Joi.ref("password")).required(),
