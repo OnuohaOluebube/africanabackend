@@ -11,7 +11,7 @@ describe("auth", () => {
 
   afterEach(async () => {
     await server.close();
-    Category.remove({});
+    await Category.remove({});
   });
 
   const exec = async () => {
