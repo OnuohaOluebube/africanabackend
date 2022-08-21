@@ -10,7 +10,6 @@ const config = require("config");
 router.get(
   "/",
   asyncMiddleware(async (req, res) => {
-    // console.log(config.get("accessKeyId"));
     const categories = await Category.find().sort("name");
     res.send(categories);
   })

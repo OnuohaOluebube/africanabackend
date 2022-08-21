@@ -2,8 +2,8 @@ const nodemailer = require("nodemailer");
 const config = require("config");
 
 module.exports = sendConfirmationEmail = (name, email, confirmationCode) => {
-  let user = config.get("user");
-  let pass = config.get("pass");
+  let user = process.env.USER;
+  let pass = process.env.PASS;
   const transport = nodemailer.createTransport({
     service: "Gmail",
     auth: {

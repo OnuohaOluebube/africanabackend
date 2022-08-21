@@ -10,7 +10,7 @@ describe("user.generatAuthToken", () => {
       isAdmin: true,
     };
     const token = new User(user).generateAuthToken();
-    const decoded = jwt.verify(token, config.get("private"));
+    const decoded = jwt.verify(token, process.env.PRIVATE);
     expect(decoded).toHaveProperty("id");
     expect(decoded).toHaveProperty("isAdmin", true);
   });

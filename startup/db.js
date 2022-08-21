@@ -3,7 +3,7 @@ const logger = require("./logger");
 const config = require("config");
 
 module.exports = function () {
-  const db = config.get("db");
+  const db = process.env.DB;
   console.log("database", db);
   mongoose
     .connect(db, {

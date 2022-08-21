@@ -28,7 +28,7 @@ router.post(
 
     const confirmationToken = jwt.sign(
       { email: req.body.email },
-      config.get("private")
+      process.env.PRIVATE
     );
 
     user = new User({
