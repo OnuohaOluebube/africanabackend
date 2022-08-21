@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
+
 const { Image, validate } = require("../models/images");
+const { User } = require("../models/user");
 const { Category } = require("../models/categories");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const auth = require("../middleware/auth");
@@ -8,7 +10,9 @@ const auth = require("../middleware/auth");
 router.get(
   "/",
   asyncMiddleware(async (req, res) => {
-    const images = await Image.find().sort("-datePosted");
+    const images = await Image.find()
+      .sort("-datePosted")
+      .populate("user", "_id firstname lastname");
     // for (const image of images) {
     //   image.imageUrl = "https://dhjqonurh50ak.cloudfront.net/" + images.name;
     // }
@@ -41,17 +45,23 @@ router.post(
       return res
         .status(400)
         .send("The Image with thwe given ID cannot be found");
-
+    console.log(req.user);
     const image = new Image({
       name: req.body.name,
       category: {
         _id: category._id,
         name: category.name,
       },
+      user: req.user._id,
       description: req.body.description,
       tags: req.body.tags,
+      s3Url: req.body.s3Url,
     });
     image.save();
+    image.populate("user");
+    image.user = await User.findOne({ _id: req.user._id }).select(
+      "_id firstname lastname"
+    );
     res.send(image);
   })
 );

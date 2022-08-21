@@ -6,28 +6,34 @@ const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
 
 router.post("/", async (req, res) => {
+  console.log(req.body);
   const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  console.log(error);
+  if (error) return res.status(400).send({ error: error.details[0].message });
 
   const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("Invalid email or password");
+  if (!user)
+    return res.status(400).send({ error: "Invalid email or password" });
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send("Invalid email or password");
+  if (!validPassword)
+    return res.status(400).send({ error: "Invalid email or password" });
 
   const token = user.generateAuthToken();
-  res.send(token);
+  res.status(200).send({
+    token,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+  });
 });
 
 const validate = (user) => {
   const schema = Joi.object({
     email: Joi.string()
       .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-      .required()
-      .min(3)
-      .max(255),
-
-    password: passwordComplexity(),
+      .required(),
+    password: Joi.string().required(),
   });
   return schema.validate(user);
 };

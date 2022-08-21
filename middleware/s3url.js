@@ -17,11 +17,13 @@ const s3 = new aws.S3({
 });
 
 module.exports = async function generateUploadUrl() {
-  const imgname = crypto.randomBytes(16).toString("hex");
+  let imgname = crypto.randomBytes(16).toString("hex");
+  imgname += ".jpg";
+
   const params = {
     Bucket: bucketname,
     Key: imgname,
-    Expires: 60,
+    Expires: 300,
   };
 
   const uploadUrl = await s3.getSignedUrlPromise("putObject", params);

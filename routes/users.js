@@ -20,11 +20,17 @@ router.post(
   "/",
   asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send({ error: error.details[0].message });
 
     let user = await User.findOne({ email: req.body.email });
+
+    if (user?.status === "Active")
+      return res.status(400).send({ error: "you Already havean account" });
+
     if (user)
-      return res.status(400).send("Pending Account. Please Verify Your Email!");
+      return res
+        .status(400)
+        .send({ error: "Pending Account. Verify Your Email!" });
 
     const confirmationToken = jwt.sign(
       { email: req.body.email },
@@ -46,9 +52,9 @@ router.post(
     sendConfirmationEmail(user.firstname, user.email, user.confirmationCode);
 
     if (user.status != "Active")
-      return res
-        .status(401)
-        .send("User was registered successfully! Please check your email");
+      return res.status(201).send({
+        message: "User was registered successfully! Please check your email",
+      });
   })
 );
 

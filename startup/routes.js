@@ -6,9 +6,11 @@ const verifyuser = require("../routes/verifyuser");
 const express = require("express");
 const error = require("../middleware/error");
 const s3url = require("../routes/s3url");
+var cors = require("cors");
 
 module.exports = function (app) {
   app.use(express.json());
+  app.use(cors());
   app.use("/api/categories", categories);
   app.use("/api/images", images);
   app.use("/api/users", users);

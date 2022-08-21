@@ -13,7 +13,7 @@ router.get("/:confirmationCode", async (req, res) => {
   await user.save();
   res
     .header("x-auth-token", token)
-    .send([user.email, user.firstname, user.lastname]);
+    .redirect(process.env.FRONTEND_URL + "/login");
 });
 
 module.exports = router;
