@@ -7,8 +7,8 @@ const crypto = require("crypto");
 
 const region = "us-east-1";
 const bucketname = "africana12345";
-const accessKeyId = "AKIA5EP2EPKRLTAYUUHX";
-const secretAccessKey = "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";
+const accessKeyId = process.env.ACCESS_KEY_ID;
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 const s3 = new aws.S3({
   region,
   signatureVersion: "v4",

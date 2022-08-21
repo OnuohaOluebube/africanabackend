@@ -2,7 +2,6 @@ const express = require("express");
 const { User } = require("../models/user");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const config = require("config");
 
 router.get("/:confirmationCode", async (req, res) => {
   const user = await User.findOne({
