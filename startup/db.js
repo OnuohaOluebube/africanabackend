@@ -4,7 +4,7 @@ const config = require("config");
 
 module.exports = function () {
   const db = config.get("db");
-  console.log(db);
+  console.log("database", db);
   mongoose
     .connect(db, {
       useUnifiedTopology: true,
