@@ -1,6 +1,5 @@
 const dotenv = require("dotenv");
 dotenv.config();
-console.log(process.env);
 const express = require("express");
 const app = express();
 const logger = require("./startup/logger");
