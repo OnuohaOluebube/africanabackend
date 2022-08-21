@@ -14,6 +14,6 @@ module.exports = function (app) {
   app.use("/api/users", users);
   app.use("/api/auth", auth);
   app.use("/api/s3url", s3url);
-  app.use("/api/verifyuser", verifyuser);
+  // app.use("/api/verifyuser", verifyuser);
   app.use(error);
 };
