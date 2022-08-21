@@ -30,6 +30,15 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     maxlength: 1024,
   },
+  status: {
+    type: String,
+    enum: ["Pending", "Active"],
+    default: "Pending",
+  },
+  confirmationCode: {
+    type: String,
+    unique: true,
+  },
 });
 
 userSchema.methods.generateAuthToken = function () {

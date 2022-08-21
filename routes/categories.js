@@ -5,10 +5,12 @@ const { Category, validate } = require("../models/categories");
 const auth = require("../middleware/auth");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const validateObjectId = require("../middleware/validateObjectId");
+const config = require("config");
 
 router.get(
   "/",
   asyncMiddleware(async (req, res) => {
+    console.log(config.get("accessKeyId"));
     const categories = await Category.find().sort("name");
     res.send(categories);
   })

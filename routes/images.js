@@ -9,6 +9,9 @@ router.get(
   "/",
   asyncMiddleware(async (req, res) => {
     const images = await Image.find().sort("-datePosted");
+    // for (const image of images) {
+    //   image.imageUrl = "https://dhjqonurh50ak.cloudfront.net/" + images.name;
+    // }
     res.send(images);
   })
 );
