@@ -23,7 +23,7 @@ router.get(
 router.get(
   "/:id",
   asyncMiddleware(async (req, res) => {
-    const image = await Image.findById(req.params.id);
+    const image = await Image.findById(req.params.id).sort("datePosted");
     if (!image)
       return res
         .status(400)
