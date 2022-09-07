@@ -11,6 +11,7 @@ router.get("/:confirmationCode", async (req, res) => {
   const token = user.generateAuthToken();
   user.status = "Active";
   await user.save();
+  console.log(token)
   res
     .header("x-auth-token", token)
     .redirect(process.env.FRONTEND_URL + "/login");

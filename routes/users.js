@@ -10,9 +10,9 @@ const config = require("config");
 
 router.get(
   "/me",
+  auth,
   asyncMiddleware(async (req, res) => {
-    const user = await User.findById(req.user.id).select("-password");
-
+       const user = await User.findById(req.user._id).select("-password -status -confirmationCode");
     res.send(user);
   })
 );
@@ -25,7 +25,7 @@ router.post(
     let user = await User.findOne({ email: req.body.email });
 
     if (user?.status === "Active")
-      return res.status(400).send({ error: "you Already havean account" });
+      return res.status(400).send({ error: "User already registered" });
 
     if (user)
       return res
@@ -50,10 +50,11 @@ router.post(
 
     await user.save();
     sendConfirmationEmail(user.firstname, user.email, user.confirmationCode);
-
+console.log("Code",user.confirmationCode)
     if (user.status != "Active")
       return res.status(201).send({
         message: "User was registered successfully! Please check your email",
+     
       });
   })
 );
